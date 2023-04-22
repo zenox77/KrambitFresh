@@ -636,7 +636,7 @@ AddEventHandler('towgarage:triggermenu', function(degradation,eHealth,bHealth)
 
 		local Internals = {
 			{
-				title = "Vehicle Model: ".. GetDisplayNameFromVehicleModel(GetEntityModel(targetVehicle)),
+				title = "".. GetDisplayNameFromVehicleModel(GetEntityModel(targetVehicle)),
 				description = "Plate:" ..GetVehicleNumberPlateText(targetVehicle).. " | Rating:"..Config.VehiclesClasses[vehicle].rating .." | Class:"..Config.VehiclesClasses[vehicle].class,
 				children = {
 					{
@@ -854,27 +854,40 @@ end)
 
 RegisterNetEvent('towgarage:checkDegMenu')
 AddEventHandler('towgarage:checkDegMenu', function(JobCheck,button)
-	local isCar = false
-	local playerped = PlayerPedId()
-	local coordA = GetEntityCoords(playerped, 1)
-	local coordB = GetOffsetFromEntityInWorldCoords(playerped, 0.0, 5.0, 0.0)
-	local targetVehicle = getVehicleInDirection(coordA, coordB)
-	local engineHealth = math.ceil(GetVehicleEngineHealth(targetVehicle))
-	local bodyHealth = math.ceil(GetVehicleBodyHealth(targetVehicle))
+    if exports["qb-inventory"]:hasEnoughOfItem("advrepairkit", 1, false, true) then
+        local isCar = false
+        local playerped = PlayerPedId()
+        local coordA = GetEntityCoords(playerped, 1)
+        local coordB = GetOffsetFromEntityInWorldCoords(playerped, 0.0, 5.0, 0.0)
+        local targetVehicle = getVehicleInDirection(coordA, coordB)
+        local engineHealth = math.ceil(GetVehicleEngineHealth(targetVehicle))
+        local bodyHealth = math.ceil(GetVehicleBodyHealth(targetVehicle))
 
-	local isOwend = false
-	if targetVehicle ~= nil  and targetVehicle ~= 0 and not isInMenu then
-		if GetVehicleClass(targetVehicle) ~= 13 and GetVehicleClass(targetVehicle) ~= 21 and GetVehicleClass(targetVehicle) ~= 16 and GetVehicleClass(targetVehicle) ~= 15 and GetVehicleClass(targetVehicle) ~= 14 then
-			local plate = GetVehicleNumberPlateText(targetVehicle)
-			TriggerServerEvent('veh.callDegredation',plate,true)
-			TriggerServerEvent('veh.examine',plate,targetVehicle)
-		else
-			TriggerEvent("DoLongHudText", "Cannot check this.",2)
-		end
-	else
-		TriggerEvent("DoLongHudText", "No Vehicle targeted.",2)
-	end
+        local isOwend = false
+        if targetVehicle ~= nil and targetVehicle ~= 0 and not isInMenu then
+            if GetVehicleClass(targetVehicle) ~= 13 and GetVehicleClass(targetVehicle) ~= 21 and GetVehicleClass(targetVehicle) ~= 16 and GetVehicleClass(targetVehicle) ~= 15 and GetVehicleClass(targetVehicle) ~= 14 then
+                local hoodRatio = GetVehicleDoorAngleRatio(targetVehicle, 4)
+                local trunkRatio = GetVehicleDoorAngleRatio(targetVehicle, 5)
+                local isHoodOpen = hoodRatio > 0.0
+                local isTrunkOpen = trunkRatio > 0.0
+                if isHoodOpen or isTrunkOpen then
+                    local plate = GetVehicleNumberPlateText(targetVehicle)
+			        TriggerServerEvent('veh.callDegredation', plate, true)
+		         	TriggerServerEvent('veh.examine', plate, targetVehicle)
+				else
+					TriggerEvent("DoLongHudText", "Open the hood first!", 2)
+				end
+            else
+                TriggerEvent("DoLongHudText", "Cannot check this.", 2)
+            end
+        else
+            TriggerEvent("DoLongHudText", "No Vehicle targeted.", 2)
+        end
+    else
+        TriggerEvent("DoLongHudText", "Missing tool to examine!", 2)
+    end
 end)
+
 
 RegisterNetEvent('towgarage:flatbed')
 AddEventHandler('towgarage:flatbed', function(model)

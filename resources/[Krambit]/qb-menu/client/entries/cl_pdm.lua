@@ -1,0 +1,41 @@
+-- local GeneralEntries, SubMenu = MenuEntries['general'], {}
+
+-- local Buying = {
+--     {
+--         id = 'qb-fuel:pdmmenushit',
+--         title = "Set Commission",
+--         icon = "#drivinginstructor-drivingtest",
+--         event = "qb-fuel:pdmmenushit"
+--     },
+--     {
+--         id = 'qb-pdm:testdrivepdm',
+--         title = "Enable Test Drive",
+--         icon = "#drivinginstructor",
+--         event = "qb-pdm:testdrivepdm"
+--     },
+--     {
+--         id = 'qb-pdm:enableBuypdm',
+--         title = "Enable Purchase",
+--         icon = "#animation-money",
+--         event = "qb-pdm:enableBuypdm"
+--     },
+-- }
+
+-- Citizen.CreateThread(function()
+--     for index, data in ipairs(Buying) do
+--         SubMenu[index] = data.id
+--         MenuItems[data.id] = {data = data}
+--     end
+
+--     GeneralEntries[#GeneralEntries+1] = {
+--         data = {
+--             id = "Buying",
+--             icon = "#car",
+--             title = "PDM" 
+--         },
+--         subMenus = SubMenu,
+--         isEnabled = function(pEntity, pContext)
+--             return (exports["qb-business"]:IsEmployedAt("pdm") and exports['qb-pdm']:isNearDealerShip() )
+--         end,
+--     }
+-- end)

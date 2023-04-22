@@ -633,40 +633,54 @@ AddEventHandler('towgarage:triggermenu', function(degradation,eHealth,bHealth)
 		currentVeh = targetVehicle
 		local vehicle = GetDisplayNameFromVehicleModel(GetEntityModel(targetVehicle)):lower()
 		
-
 		function GetVehicleClass(vehicle)
 			local classValue = GetVehicleHandlingFloat(vehicle, "CHandlingData", "fInitialDriveMaxFlatVel")
-			local rating
+			local rating = 0
 			local class
-
+		
 			if classValue >= 300 then
 				class = "S+"
-				rating = "900"
+				rating = 900
 			elseif classValue >= 260 then
 				class = "S"
-				rating = "700"
+				rating = 700
 			elseif classValue >= 200 then
 				class = "A+"
-				rating = "500"
+				rating = 500
 			elseif classValue >= 190 then
 				class = "A"
-				rating = "400"
+				rating = 400
 			elseif classValue >= 170 then
 				class = "B"
-				rating = "325"
+				rating = 325
 			elseif classValue >= 150 then
 				class = "C"
-				rating = "240"
+				rating = 240
 			elseif classValue >= 100 then
 				class = "D"
-				rating = "100"
+				rating = 100
 			else
 				class = "E"
-				rating = "50"
+				rating = 50
+			end
+		
+			if GetVehicleMod(vehicle, 11) > -1 then -- Engine upgrade
+				rating = rating + 50
+			end
+			if GetVehicleMod(vehicle, 13) > -1 then -- Transmission upgrade
+				rating = rating + 50
+			end
+			if GetVehicleMod(vehicle, 15) > -1 then -- Suspension upgrade
+				rating = rating + 50
 			end
 		
 			return class, rating
 		end
+		
+		
+		
+		
+		
 		  
 		local class, rating = GetVehicleClass(targetVehicle)
 		  

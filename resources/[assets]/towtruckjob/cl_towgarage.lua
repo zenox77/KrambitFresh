@@ -634,11 +634,47 @@ AddEventHandler('towgarage:triggermenu', function(degradation,eHealth,bHealth)
 		local vehicle = GetDisplayNameFromVehicleModel(GetEntityModel(targetVehicle)):lower()
 		
 
-		local Internals = {
+		function GetVehicleClass(vehicle)
+			local classValue = GetVehicleHandlingFloat(vehicle, "CHandlingData", "fInitialDriveMaxFlatVel")
+			local rating
+			local class
+
+			if classValue >= 300 then
+				class = "S+"
+				rating = "900"
+			elseif classValue >= 260 then
+				class = "S"
+				rating = "700"
+			elseif classValue >= 200 then
+				class = "A+"
+				rating = "500"
+			elseif classValue >= 190 then
+				class = "A"
+				rating = "400"
+			elseif classValue >= 170 then
+				class = "B"
+				rating = "325"
+			elseif classValue >= 150 then
+				class = "C"
+				rating = "240"
+			elseif classValue >= 100 then
+				class = "D"
+				rating = "100"
+			else
+				class = "E"
+				rating = "50"
+			end
+		
+			return class, rating
+		end
+		  
+		local class, rating = GetVehicleClass(targetVehicle)
+		  
+		  local Internals = {
 			{
-				title = "".. GetDisplayNameFromVehicleModel(GetEntityModel(targetVehicle)),
-				description = "Plate:" ..GetVehicleNumberPlateText(targetVehicle).. " | Rating:"..Config.VehiclesClasses[vehicle].rating .." | Class:"..Config.VehiclesClasses[vehicle].class,
-				children = {
+			  title = "".. GetDisplayNameFromVehicleModel(GetEntityModel(targetVehicle)),
+			  description = "Plate: " ..GetVehicleNumberPlateText(targetVehicle).. " | Rating: "..rating.." | Class: "..class,  
+			  children = {
 					{
 						title = "Brakes",
 						description = "Current State: " .. round(degHealth["breaks"] / 10,2) .. "/10.0%",

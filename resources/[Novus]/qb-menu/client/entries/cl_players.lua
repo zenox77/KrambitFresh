@@ -66,7 +66,7 @@ PedEntries[#PedEntries+1] = {
         id = "peds-heal",
         title = "Heal",
         icon = "#medic-heal",
-        event = "ems:heal",
+        event = "revive",
     },
     isEnabled = function(pEntity, pContext)
         return not isDead and (isMedic or isDoctor or isDoc)

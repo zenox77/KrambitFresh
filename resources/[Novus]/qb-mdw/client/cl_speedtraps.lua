@@ -63,6 +63,6 @@ AddEventHandler("qb-polyzone:enter", function(name)
   local speed = GetEntitySpeed(veh) * 2.23
   if speed < 80 then return end
   print('You was caught speeding :D')
-  TriggerEvent("client:newStress", true, math.random(100, 200))
+  TriggerEvent("client:newStress", true, math.random(30,35))
   -- TriggerServerEvent("qb-mdt:triggerSpeedTrap", NetworkGetNetworkIdFromEntity(veh))
 end)

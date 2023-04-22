@@ -846,7 +846,7 @@ function getShungiteAmount(id)
 end
 
 function getTgbAmount(id) -- REDO check if they have any first
-    exports.oxmysql:execute('SELECT * FROM characters WHERE id = @id', {['id'] = id}, function(result)
+    exports.oxmysql:execute('SELECT * FROM boosting_users WHERE identifier = @id', {['id'] = id}, function(result)
         tbg = result[1].tbg
     end)
     return tbg or 0

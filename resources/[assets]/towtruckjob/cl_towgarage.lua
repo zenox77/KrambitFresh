@@ -664,22 +664,88 @@ AddEventHandler('towgarage:triggermenu', function(degradation,eHealth,bHealth)
 				rating = 50
 			end
 		
-			if GetVehicleMod(vehicle, 11) > -1 then -- Engine upgrade
+			if GetVehicleMod(vehicle, 11) > -1 then 
 				rating = rating + 50
 			end
-			if GetVehicleMod(vehicle, 13) > -1 then -- Transmission upgrade
+			if GetVehicleMod(vehicle, 13) > -1 then 
 				rating = rating + 50
 			end
-			if GetVehicleMod(vehicle, 15) > -1 then -- Suspension upgrade
+			if GetVehicleMod(vehicle, 15) > -1 then 
 				rating = rating + 50
 			end
-		
+			if GetVehicleMod(vehicle, 0) > -1 then 
+				rating = rating + 5
+			end
+			if GetVehicleMod(vehicle, 1) > -1 then 
+				rating = rating + 5
+			end
+			if GetVehicleMod(vehicle, 2) > -1 then 
+				rating = rating + 5
+			end
+			if GetVehicleMod(vehicle, 3) > -1 then 
+				rating = rating + 5
+			end
+			if GetVehicleMod(vehicle, 4) > -1 then 
+				rating = rating + 5
+			end
+			if GetVehicleMod(vehicle, 5) > -1 then 
+				rating = rating + 5
+			end
+			if GetVehicleMod(vehicle, 6) > -1 then 
+				rating = rating + 5
+			end
+			if GetVehicleMod(vehicle, 7) > -1 then 
+				rating = rating + 5
+			end
+			if GetVehicleMod(vehicle, 8) > -1 then 
+				rating = rating + 5
+			end
+			if GetVehicleMod(vehicle, 9) > -1 then 
+				rating = rating + 5
+			end
+			if GetVehicleMod(vehicle, 10) > -1 then 
+				rating = rating + 5
+			end
+			if GetVehicleMod(vehicle, 12) > -1 then 
+				rating = rating + 5
+			end
+			if GetVehicleMod(vehicle, 14) > -1 then 
+				rating = rating + 5
+			end
+
+			if GetVehicleMod(vehicle, 16) > -1 then 
+				rating = rating + 5
+			end
+			if GetVehicleMod(vehicle, 17) > -1 then 
+				rating = rating + 5
+			end
+			if GetVehicleMod(vehicle, 18) > -1 then 
+				rating = rating + 5
+			end
+			if GetVehicleMod(vehicle, 19) > -1 then 
+				rating = rating + 5
+			end
+			if GetVehicleMod(vehicle, 20) > -1 then 
+				rating = rating + 5
+			end
+			if GetVehicleMod(vehicle, 21) > -1 then 
+				rating = rating + 5
+			end
+			if GetVehicleMod(vehicle, 22) > -1 then 
+				rating = rating + 5
+			end
+			if GetVehicleMod(vehicle, 23) > -1 then 
+				rating = rating + 5
+			end
+			if GetVehicleMod(vehicle, 24) > -1 then 
+				rating = rating + 5
+			end
+			if GetVehicleMod(vehicle, 25) > -1 then 
+				rating = rating + 5
+			end
+
 			return class, rating
 		end
-		
-		
-		
-		
 		
 		  
 		local class, rating = GetVehicleClass(targetVehicle)

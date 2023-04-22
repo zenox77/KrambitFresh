@@ -808,7 +808,7 @@ end
 RegisterNetEvent("dispatch:trigger-dispatch-client:custom")
 AddEventHandler("dispatch:trigger-dispatch-client:custom", function(code,code1, name, street, alertcoordx, alertcoordy, time, icon, pEmergencyType)
     local myjob = exports["isPed"]:isPed("myJob")
-    if myjob == "police" or myjob == 'state' or myjob == 'sheriff' then
+    if myjob == "police" or myjob == 'state' or myjob == 'ems' or myjob == 'sheriff' then
         if pEmergencyType then 
             TriggerEvent('InteractSound_CL:PlayOnOne', "alert", 0.3)
             SendNUIMessage({

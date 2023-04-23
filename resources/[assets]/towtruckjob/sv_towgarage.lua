@@ -118,6 +118,31 @@ AddEventHandler('towtruck:dropEnd', function()
 	end)
 end)
 
+RegisterServerEvent('removeEngineMod')
+AddEventHandler('removeEngineMod', function()
+    local source = source
+    local playerPed = GetPlayerPed(source)
+    local playerCoords = GetEntityCoords(playerPed)
+    local targetVehicle = GetClosestVehicle(playerCoords.x, playerCoords.y, playerCoords.z, 5.0, 0, 71)
+
+    if targetVehicle ~= nil and DoesEntityExist(targetVehicle) then
+        local engineMod = GetVehicleMod(targetVehicle, 11)
+        
+        if engineMod ~= -1 then
+            print("yesremoved")
+            -- Add necessary checks here (e.g. player has permission, prevent cheating)
+            RemoveVehicleMod(targetVehicle, 11)
+            TriggerClientEvent("DoLongHudText", source, "Engine mod removed!", 1)
+        else
+            TriggerClientEvent("DoLongHudText", source, "No Mod", 2)
+        end
+    else
+        TriggerClientEvent("DoLongHudText", source, "No Vehicle Infront of you", 2)
+    end
+end)
+
+
+
 RegisterServerEvent('towgarage:checkJobBounce')
 AddEventHandler('towgarage:checkJobBounce', function(button)
     local src = source

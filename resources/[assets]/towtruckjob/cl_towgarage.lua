@@ -663,15 +663,44 @@ AddEventHandler('towgarage:triggermenu', function(degradation,eHealth,bHealth)
 				class = "E"
 				rating = 50
 			end
-		
-			if GetVehicleMod(vehicle, 11) > -1 then 
+
+			local engineLevel = GetVehicleMod(vehicle, 11)
+			if engineLevel == 1 then
+				rating = rating + 35
+			elseif engineLevel == 2 then
 				rating = rating + 50
+			elseif engineLevel == 3 then
+				rating = rating + 90
+			elseif engineLevel == 4 then
+				rating = rating + 120
+			elseif engineLevel == 5 then
+				rating = rating + 150
 			end
-			if GetVehicleMod(vehicle, 13) > -1 then 
+			
+			local transmissionLevel = GetVehicleMod(vehicle, 13)
+			if transmissionLevel == 1 then
+				rating = rating + 35
+			elseif transmissionLevel == 2 then
 				rating = rating + 50
+			elseif transmissionLevel == 3 then
+				rating = rating + 90
+			elseif transmissionLevel == 4 then
+				rating = rating + 120
+			elseif transmissionLevel == 5 then
+				rating = rating + 150
 			end
-			if GetVehicleMod(vehicle, 15) > -1 then 
+			
+			local suspensionLevel = GetVehicleMod(vehicle, 15)
+			if suspensionLevel == 1 then
+				rating = rating + 35
+			elseif suspensionLevel == 2 then
 				rating = rating + 50
+			elseif suspensionLevel == 3 then
+				rating = rating + 90
+			elseif suspensionLevel == 4 then
+				rating = rating + 120
+			elseif suspensionLevel == 5 then
+				rating = rating + 150
 			end
 			if GetVehicleMod(vehicle, 0) > -1 then 
 				rating = rating + 5
@@ -747,14 +776,157 @@ AddEventHandler('towgarage:triggermenu', function(degradation,eHealth,bHealth)
 			return class, rating
 		end
 		
-		  
-		local class, rating = GetVehicleClass(targetVehicle)
-		  
-		  local Internals = {
-			{
-			  title = "".. GetDisplayNameFromVehicleModel(GetEntityModel(targetVehicle)),
-			  description = "Plate: " ..GetVehicleNumberPlateText(targetVehicle).. " | Rating: "..rating.." | Class: "..class,  
-			  children = {
+    local class, rating, engineLevelText,BrakeLevelText,SuspiLevelText  = GetVehicleClass(targetVehicle)
+	local engineMods, TransMiMods, SuspMods, BrakesMods = {
+		[0] = "Stock",
+		[1] = "Level 1",
+		[2] = "Level 2",
+		[3] = "Level 3",
+		[4] = "Level 4",
+		[5] = "Level 5"
+	}
+	local TransMiMods = {
+		[0] = "Stock",
+		[1] = "Level 1",
+		[2] = "Level 2",
+		[3] = "Level 3",
+		[4] = "Level 4",
+		[5] = "Level 5"
+	}
+	local SuspMods = {
+		[0] = "Stock",
+		[1] = "Level 1",
+		[2] = "Level 2",
+		[3] = "Level 3",
+		[4] = "Level 4",
+		[5] = "Level 5"
+	}
+	local BrakesMods = {
+		[0] = "Stock",
+		[1] = "Level 1",
+		[2] = "Level 2",
+		[3] = "Level 3",
+		[4] = "Level 4",
+		[5] = "Level 5"
+	}
+	
+	
+	
+	local engineLevel = GetVehicleMod(targetVehicle, 11) + 1
+	local TransmiLevel = GetVehicleMod(targetVehicle, 13) + 1
+	local SuspiLevel = GetVehicleMod(targetVehicle, 15) + 1
+	local BrakesLevel = GetVehicleMod(targetVehicle, 12) + 1
+
+	local engineLevelText = engineMods[engineLevel] or "Unknown"
+	local BrakeLevelText = BrakesMods[BrakesLevel] or "Unknown"
+	local SuspiLevelText = SuspMods[SuspiLevel] or "Unknown"
+	local TransmiLevelText = TransMiMods[TransmiLevel] or "Unknown"
+	local isNitrousInstalled = IsToggleModOn(targetVehicle, 18)
+
+	function GetVehicleMileage(vehicle)
+		local kmh = GetVehicleDashboardSpeed(vehicle)
+		local ms = kmh / 3.6 -- Convert km/h to m/s
+		local hours = GetVehicleHours(vehicle)
+		local mileage = ms * hours
+		return mileage
+	end
+	
+	function GetVehicleHours(vehicle)
+		local engineStartTime = GetVehicleEngineStartTime(vehicle)
+		if engineStartTime == 0 then return 0 end
+		local currentTime = GetGameTimer()
+		local engineHours = (currentTime - engineStartTime) / 1000 / 60 / 60
+		print("Engine hours for vehicle " .. vehicle .. ": " .. engineHours)
+		return engineHours
+	end
+	
+	function GetVehicleEngineStartTime(vehicle)
+		local engineStartTime = GetVehicleMetadata(vehicle, "engine_start_time")
+		if engineStartTime == nil then
+			engineStartTime = GetGameTimer()
+			SetVehicleMetadata(vehicle, "engine_start_time", engineStartTime)
+		end
+		print("Engine start time for vehicle " .. vehicle .. ": " .. engineStartTime)
+		return engineStartTime
+	end
+	
+	function SetVehicleMetadata(vehicle, key, value)
+		if not DoesEntityExist(vehicle) then return end
+		local id = NetworkGetNetworkIdFromEntity(vehicle)
+		SetNetworkVehicleCustomProperties(id, {[key] = value})
+	end
+	
+	function GetVehicleMetadata(vehicle, key)
+		if not DoesEntityExist(vehicle) then return nil end
+		local id = NetworkGetNetworkIdFromEntity(vehicle)
+		local props = GetNetworkVehicleCustomProperties(id)
+		return props[key]
+	end
+
+	RegisterNetEvent('removeEngineMod')
+	AddEventHandler('removeEngineMod', function()
+		ExecuteCommand("e mechanic")
+		local finished = exports['qb-taskbar']:taskBar(10000, 'Removing Engine')
+		if finished == 100 then
+			ExecuteCommand("e c")
+			local playerPed = PlayerPedId()
+			local playerCoords = GetEntityCoords(playerPed)
+			local targetVehicle = GetClosestVehicle(playerCoords.x, playerCoords.y, playerCoords.z, 5.0, 0, 71)
+			
+			if targetVehicle and DoesEntityExist(targetVehicle) and IsEntityAVehicle(targetVehicle) then
+				local engineMod = GetVehicleMod(targetVehicle, 11)
+				
+				if engineMod ~= -1 then
+					RemoveVehicleMod(targetVehicle, 11)
+					TriggerEvent("DoLongHudText", "Engine mod removed!", 1)
+				else
+					TriggerEvent("DoLongHudText", "No Mod", 2)
+				end
+			else
+				TriggerEvent("DoLongHudText", "No Vehicle Infront of you dumbass", 2)
+			end
+		end
+	end)
+	
+	        local Internals = {
+		           	{
+			           title = "".. GetDisplayNameFromVehicleModel(GetEntityModel(targetVehicle)),
+			           description = "Mileage: " ..GetVehicleMileage(vehicle).. " | Rating: "..rating.." | Class: "..class,  
+			           children = {
+					{
+						title = "View Modifications",
+						description = "",
+						disabled = not exports["qb-inventory"]:hasEnoughOfItem("repairkit", 1, false),
+						children = {
+							{
+								title = "Engine: "..engineLevelText,
+								description = "",
+								children = {
+									title = "Remove Upgrade",
+									action = "Removethedamnengine",
+									disabled = GetVehicleMod(targetVehicle, 11) == -1,
+								}
+							
+							},
+							{
+								title = "Transmission: "..TransmiLevelText,
+								description = "",
+							},
+							{
+								title = "Suspension: "..SuspiLevelText,
+								description = "",
+							},
+							{
+								title = "Brakes: "..BrakeLevelText,
+								description = "",
+							},
+							{
+								title = "Turbo",
+								description = "",
+							    disabled = not isNitrousInstalled,
+							},
+						}
+					},
 					{
 						title = "Brakes",
 						description = "Current State: " .. round(degHealth["breaks"] / 10,2) .. "/10.0%",
@@ -815,12 +987,19 @@ AddEventHandler('towgarage:triggermenu', function(degradation,eHealth,bHealth)
 						key = "engine",
 						action = "qb-vehicles:fixPart"
 					},
-				}
-			}
+                }
+            },
 		}
-		exports["qb-interface"]:showContextMenu(Internals)
-	end
+        exports["qb-interface"]:showContextMenu(Internals)
+    end
+
 end)
+
+RegisterInterfaceCallback('Removethedamnengine', function(data, cb)
+    cb({ data = {}, meta = { ok = true, message = '' } })
+	TriggerEvent('removeEngineMod')
+end)
+
 
 RegisterInterfaceCallback('qb-vehicles:fixPart', function(data, cb)
     cb({ data = {}, meta = { ok = true, message = '' } })

@@ -666,6 +666,10 @@ Config.VehiclesClasses = {
         class = 'A',
         rating = 875,
     },
+    ['comet6'] = {
+        class = 'A',
+        rating = 875,
+    },
 
     ['jester3'] = {
         class = 'A',

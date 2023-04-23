@@ -307,7 +307,7 @@ function Spawn.selectedSpawn(spawnInfo)
 			Wait(0)
 		end
 		FreezeEntityPosition(PlayerPedId(), false)
-		-- TriggerEvent("nopixel:raid_clothes_pedfix") --fix characters breaking
+		 TriggerEvent("nopixel:raid_clothes_pedfix") --fix characters breaking
 
 		DoScreenFadeIn(2500)
 		-- Login.characterSpawned()
